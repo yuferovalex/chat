@@ -18,13 +18,14 @@ import java.util.Observer;
 public class MainFormController implements Observer {
     private MainForm mainForm;
     private Connection connection;
+    private Timer updateDataTimer;
 
     public MainFormController(Connection connection) {
         this.connection = connection;
         this.mainForm = new MainForm(this);
 
         connection.addObserver(this);
-        Timer updateDataTimer = new Timer(1000, (e) -> updateData());
+        updateDataTimer = new Timer(1000, (e) -> updateData());
         updateDataTimer.start();
     }
 
@@ -68,6 +69,12 @@ public class MainFormController implements Observer {
         JOptionPane.showMessageDialog(mainForm, "Error: " + error);
     }
 
+    private void onConnectionError(String error) {
+        updateDataTimer.stop();
+        JOptionPane.showMessageDialog(mainForm, "Connection error: " + error);
+        System.exit(1);
+    }
+
     @Override
     public void update(Observable connection, Object arg) {
         Response response = (Response) arg;
@@ -98,6 +105,9 @@ public class MainFormController implements Observer {
             } else {
                 SwingUtilities.invokeLater(() -> onError(error));
             }
+        }
+        if ("/connection".equals(response.getPath()) && response.isError()) {
+            SwingUtilities.invokeLater(() -> onConnectionError(error));
         }
     }
 

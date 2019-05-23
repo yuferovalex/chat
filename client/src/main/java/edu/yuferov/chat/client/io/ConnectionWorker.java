@@ -43,6 +43,7 @@ class ConnectionWorker implements Runnable {
         } finally {
             channel = null;
         }
+        connection.disconnected();
         log.info("execution finished");
     }
 

@@ -151,4 +151,13 @@ public class Connection extends Observable {
             throw new Error("session is null");
         }
     }
+
+    public void disconnected() {
+        setChanged();
+        notifyObservers(Response.builder()
+                .path("/connection")
+                .status(500)
+                .error("server disconnected")
+                .build());
+    }
 }
