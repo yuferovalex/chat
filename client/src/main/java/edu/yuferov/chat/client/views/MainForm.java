@@ -76,7 +76,7 @@ public class MainForm extends JFrame {
     }
 
     private String formatMessage(MessageDto message) {
-        return String.format("[%s] %s: %s%n",
+        return String.format("[%s] %s: %s",
                 message.getTime(),
                 message.getAuthor(),
                 message.getBody());
